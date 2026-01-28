@@ -1,7 +1,14 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PuzzlePiece as PuzzlePieceType, PuzzleConfig } from '@/types/puzzle';
-import { generatePuzzlePieces, checkSnap, isPuzzleComplete } from '@/utils/puzzleGenerator';
+import { 
+  generatePuzzlePieces, 
+  checkPieceToGroupSnap, 
+  checkFinalSnap, 
+  isPuzzleComplete,
+  getGroupPieces,
+  mergeGroups,
+} from '@/utils/puzzleGenerator';
 import PuzzlePieceComponent from './PuzzlePiece';
 import CelebrationOverlay from './CelebrationOverlay';
 
@@ -24,7 +31,6 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
 
   // Wait for container to be ready
   useEffect(() => {
-    // Small delay to ensure the container is mounted and has dimensions
     const timer = setTimeout(() => {
       setIsReady(true);
     }, 100);
@@ -42,7 +48,6 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
       const boardWidth = container.clientWidth;
       const boardHeight = container.clientHeight;
       
-      // Don't initialize if container has no size
       if (boardWidth === 0 || boardHeight === 0) {
         console.log('Container has no size yet, waiting...');
         return;
@@ -51,7 +56,6 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
       console.log('Initializing puzzle with board size:', boardWidth, boardHeight);
       setBoardSize({ width: boardWidth, height: boardHeight });
 
-      // Calculate piece size based on image aspect ratio
       const imageAspect = image.width / image.height;
       const maxPuzzleWidth = boardWidth * 0.75;
       const maxPuzzleHeight = boardHeight * 0.85;
@@ -92,24 +96,41 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
 
   const handleDragStart = useCallback((id: number) => {
     setDraggingId(id);
-    // Bring piece to front
+    // Bring entire group to front
     setPieces(prev => {
       const piece = prev.find(p => p.id === id);
       if (!piece || piece.isPlaced) return prev;
-      return [...prev.filter(p => p.id !== id), piece];
+      
+      const groupPieces = getGroupPieces(prev, piece.groupId);
+      const groupIds = new Set(groupPieces.map(p => p.id));
+      const otherPieces = prev.filter(p => !groupIds.has(p.id));
+      
+      return [...otherPieces, ...groupPieces];
     });
   }, []);
 
   const handleDrag = useCallback((id: number, x: number, y: number) => {
-    setPieces(prev => prev.map(piece => {
-      if (piece.id !== id || piece.isPlaced) return piece;
+    setPieces(prev => {
+      const piece = prev.find(p => p.id === id);
+      if (!piece || piece.isPlaced) return prev;
       
-      // Constrain to board
-      const newX = Math.max(0, Math.min(x, boardSize.width - piece.width));
-      const newY = Math.max(0, Math.min(y, boardSize.height - piece.height));
+      // Calculate movement delta
+      const deltaX = x - piece.currentX;
+      const deltaY = y - piece.currentY;
       
-      return { ...piece, currentX: newX, currentY: newY };
-    }));
+      // Move all pieces in the same group
+      const groupId = piece.groupId;
+      
+      return prev.map(p => {
+        if (p.groupId !== groupId || p.isPlaced) return p;
+        
+        // Constrain to board
+        const newX = Math.max(0, Math.min(p.currentX + deltaX, boardSize.width - p.width));
+        const newY = Math.max(0, Math.min(p.currentY + deltaY, boardSize.height - p.height));
+        
+        return { ...p, currentX: newX, currentY: newY };
+      });
+    });
   }, [boardSize]);
 
   const handleDragEnd = useCallback((id: number) => {
@@ -119,32 +140,60 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
       const piece = prev.find(p => p.id === id);
       if (!piece || piece.isPlaced) return prev;
 
-      const shouldSnap = checkSnap(piece, prev, ROWS, COLS);
-      
-      if (shouldSnap) {
-        const newPieces = prev.map(p => {
-          if (p.id !== id) return p;
-          return {
-            ...p,
-            currentX: p.correctX,
-            currentY: p.correctY,
-            isPlaced: true,
-          };
-        });
+      let updatedPieces = [...prev];
+      const groupPieces = getGroupPieces(updatedPieces, piece.groupId);
 
-        // Check completion
-        if (isPuzzleComplete(newPieces)) {
-          setTimeout(() => setIsComplete(true), 300);
+      // First check if any piece in the group can snap to its final position
+      for (const groupPiece of groupPieces) {
+        if (checkFinalSnap(groupPiece, updatedPieces, ROWS, COLS)) {
+          // Snap entire group to final position
+          const offsetX = groupPiece.correctX - groupPiece.currentX;
+          const offsetY = groupPiece.correctY - groupPiece.currentY;
+          
+          updatedPieces = updatedPieces.map(p => {
+            if (p.groupId !== piece.groupId) return p;
+            return {
+              ...p,
+              currentX: p.correctX,
+              currentY: p.correctY,
+              isPlaced: true,
+            };
+          });
+
+          if (isPuzzleComplete(updatedPieces)) {
+            setTimeout(() => setIsComplete(true), 300);
+          }
+
+          return updatedPieces;
         }
+      }
 
-        return newPieces;
+      // Check if any piece in the group can snap to another group
+      for (const groupPiece of groupPieces) {
+        const snapResult = checkPieceToGroupSnap(groupPiece, updatedPieces, ROWS, COLS);
+        
+        if (snapResult) {
+          // Move entire group by the snap offset
+          updatedPieces = updatedPieces.map(p => {
+            if (p.groupId !== piece.groupId) return p;
+            return {
+              ...p,
+              currentX: p.currentX + snapResult.snapOffset.x,
+              currentY: p.currentY + snapResult.snapOffset.y,
+            };
+          });
+          
+          // Merge the groups
+          updatedPieces = mergeGroups(updatedPieces, piece.groupId, snapResult.targetGroupId);
+          
+          return updatedPieces;
+        }
       }
 
       return prev;
     });
   }, []);
 
-  // Show loading state while initializing
   if (!config || !isReady) {
     return (
       <div 
@@ -183,7 +232,8 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
             piece={piece}
             image={image}
             config={config}
-            isDragging={draggingId === piece.id}
+            isDragging={draggingId === piece.id || 
+              (draggingId !== null && pieces.find(p => p.id === draggingId)?.groupId === piece.groupId)}
             onDragStart={handleDragStart}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
