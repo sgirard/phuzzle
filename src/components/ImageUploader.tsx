@@ -110,7 +110,7 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
             Drag and drop an image, or click to browse
           </p>
           
-          <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
+          <div className="mt-6 flex justify-center">
             <span className="btn-gold px-6 py-3 rounded-xl font-medium inline-block">
               Choose Image
             </span>
