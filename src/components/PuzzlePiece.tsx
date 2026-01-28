@@ -59,8 +59,19 @@ function PuzzlePiece({
     ctx.lineWidth = 1;
     ctx.strokeRect(0, 0, piece.width, piece.height);
 
-    // Draw black border on edge pieces (3px)
+    // Draw black border with glow on edge pieces
     const borderWidth = 3;
+    const isEdgePiece = piece.row === 0 || piece.row === config.rows - 1 || 
+                        piece.col === 0 || piece.col === config.cols - 1;
+
+    if (isEdgePiece) {
+      // Set up glow effect for edge borders
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+    }
+
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = borderWidth;
 
@@ -95,6 +106,10 @@ function PuzzlePiece({
       ctx.lineTo(piece.width - borderWidth / 2, piece.height);
       ctx.stroke();
     }
+
+    // Reset shadow
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
 
   }, [piece, image, config]);
 
