@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PuzzlePiece as PuzzlePieceType, PuzzleConfig } from '@/types/puzzle';
-import { generatePuzzlePieces, checkSnap, isPuzzleComplete, SNAP_THRESHOLD } from '@/utils/puzzleGenerator';
+import { generatePuzzlePieces, checkSnap, isPuzzleComplete } from '@/utils/puzzleGenerator';
 import PuzzlePieceComponent from './PuzzlePiece';
 import CelebrationOverlay from './CelebrationOverlay';
 
@@ -20,10 +20,20 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [boardSize, setBoardSize] = useState({ width: 0, height: 0 });
+  const [isReady, setIsReady] = useState(false);
 
-  // Initialize puzzle
+  // Wait for container to be ready
   useEffect(() => {
-    if (!containerRef.current) return;
+    // Small delay to ensure the container is mounted and has dimensions
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Initialize puzzle once container is ready
+  useEffect(() => {
+    if (!isReady || !containerRef.current) return;
 
     const updateSize = () => {
       const container = containerRef.current;
@@ -31,6 +41,14 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
 
       const boardWidth = container.clientWidth;
       const boardHeight = container.clientHeight;
+      
+      // Don't initialize if container has no size
+      if (boardWidth === 0 || boardHeight === 0) {
+        console.log('Container has no size yet, waiting...');
+        return;
+      }
+
+      console.log('Initializing puzzle with board size:', boardWidth, boardHeight);
       setBoardSize({ width: boardWidth, height: boardHeight });
 
       // Calculate piece size based on image aspect ratio
@@ -61,6 +79,7 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
         boardHeight,
       };
 
+      console.log('Puzzle config:', newConfig);
       setConfig(newConfig);
       setPieces(generatePuzzlePieces(newConfig));
       setIsComplete(false);
@@ -69,7 +88,7 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
     updateSize();
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
-  }, [image]);
+  }, [image, isReady]);
 
   const handleDragStart = useCallback((id: number) => {
     setDraggingId(id);
@@ -125,7 +144,20 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
     });
   }, []);
 
-  if (!config) return null;
+  // Show loading state while initializing
+  if (!config || !isReady) {
+    return (
+      <div 
+        ref={containerRef}
+        className="relative w-full h-full puzzle-table wood-texture flex items-center justify-center"
+      >
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-accent border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-muted-foreground">Creating your puzzle...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
