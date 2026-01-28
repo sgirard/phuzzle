@@ -258,7 +258,10 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
 
       {/* Completion overlay */}
       {isComplete && (
-        <CelebrationOverlay onNewPuzzle={onNewPuzzle} />
+        <CelebrationOverlay 
+          onNewPuzzle={onNewPuzzle} 
+          onViewPuzzle={() => setIsComplete(false)} 
+        />
       )}
 
       {/* Progress indicator */}

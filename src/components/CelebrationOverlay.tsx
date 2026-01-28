@@ -5,9 +5,10 @@ import { Sparkles, RotateCcw } from 'lucide-react';
 
 interface CelebrationOverlayProps {
   onNewPuzzle: () => void;
+  onViewPuzzle: () => void;
 }
 
-export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayProps) {
+export default function CelebrationOverlay({ onNewPuzzle, onViewPuzzle }: CelebrationOverlayProps) {
   useEffect(() => {
     // Fire confetti from both sides
     const duration = 3000;
@@ -88,15 +89,26 @@ export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayPr
           Ready for another challenge?
         </p>
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onNewPuzzle}
-          className="btn-gold px-8 py-4 rounded-xl font-display font-semibold text-lg inline-flex items-center gap-3"
-        >
-          <RotateCcw className="w-5 h-5" />
-          Start New Puzzle
-        </motion.button>
+        <div className="flex flex-col items-center gap-3">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onNewPuzzle}
+            className="btn-gold px-8 py-4 rounded-xl font-display font-semibold text-lg inline-flex items-center gap-3"
+          >
+            <RotateCcw className="w-5 h-5" />
+            Start New Puzzle
+          </motion.button>
+          
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onViewPuzzle}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+          >
+            View completed puzzle
+          </motion.button>
+        </div>
       </motion.div>
     </motion.div>
   );
