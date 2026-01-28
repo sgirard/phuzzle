@@ -65,14 +65,14 @@ function PuzzlePiece({
                         piece.col === 0 || piece.col === config.cols - 1;
 
     if (isEdgePiece) {
-      // Set up glow effect for edge borders
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-      ctx.shadowBlur = 6;
+      // Set up glow effect for edge borders - dark glow for contrast
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 8;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
     }
 
-    ctx.strokeStyle = '#000000';
+    ctx.strokeStyle = '#FFFFFF';
     ctx.lineWidth = borderWidth;
 
     // Top edge
