@@ -114,21 +114,36 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
       const piece = prev.find(p => p.id === id);
       if (!piece || piece.isPlaced) return prev;
       
-      // Calculate movement delta
-      const deltaX = x - piece.currentX;
-      const deltaY = y - piece.currentY;
+      // Calculate intended movement delta
+      let deltaX = x - piece.currentX;
+      let deltaY = y - piece.currentY;
       
-      // Move all pieces in the same group
+      // Get all pieces in the same group
       const groupId = piece.groupId;
+      const groupPieces = prev.filter(p => p.groupId === groupId && !p.isPlaced);
       
+      if (groupPieces.length === 0) return prev;
+      
+      // Find the bounding box of the group
+      const minX = Math.min(...groupPieces.map(p => p.currentX));
+      const maxX = Math.max(...groupPieces.map(p => p.currentX + p.width));
+      const minY = Math.min(...groupPieces.map(p => p.currentY));
+      const maxY = Math.max(...groupPieces.map(p => p.currentY + p.height));
+      
+      // Constrain delta so entire group stays within bounds
+      if (minX + deltaX < 0) deltaX = -minX;
+      if (maxX + deltaX > boardSize.width) deltaX = boardSize.width - maxX;
+      if (minY + deltaY < 0) deltaY = -minY;
+      if (maxY + deltaY > boardSize.height) deltaY = boardSize.height - maxY;
+      
+      // Apply the same delta to all pieces in the group
       return prev.map(p => {
         if (p.groupId !== groupId || p.isPlaced) return p;
-        
-        // Constrain to board
-        const newX = Math.max(0, Math.min(p.currentX + deltaX, boardSize.width - p.width));
-        const newY = Math.max(0, Math.min(p.currentY + deltaY, boardSize.height - p.height));
-        
-        return { ...p, currentX: newX, currentY: newY };
+        return { 
+          ...p, 
+          currentX: p.currentX + deltaX, 
+          currentY: p.currentY + deltaY 
+        };
       });
     });
   }, [boardSize]);
