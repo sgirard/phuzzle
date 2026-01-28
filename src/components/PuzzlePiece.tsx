@@ -33,114 +33,10 @@ function PuzzlePiece({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const tabSize = Math.min(piece.width, piece.height) * 0.2;
-    const margin = tabSize;
-    
-    canvas.width = piece.width + margin * 2;
-    canvas.height = piece.height + margin * 2;
+    canvas.width = piece.width;
+    canvas.height = piece.height;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Create clipping path for puzzle piece shape
-    ctx.save();
-    ctx.beginPath();
-    
-    const x = margin;
-    const y = margin;
-    const w = piece.width;
-    const h = piece.height;
-
-    // Generate consistent tab pattern based on position
-    const hasTopTab = piece.row > 0;
-    const hasBottomTab = piece.row < config.rows - 1;
-    const hasLeftTab = piece.col > 0;
-    const hasRightTab = piece.col < config.cols - 1;
-
-    // Tab direction (alternating pattern)
-    const topTabOut = (piece.row + piece.col) % 2 === 0;
-    const leftTabOut = (piece.row + piece.col + 1) % 2 === 0;
-
-    // Draw piece shape
-    ctx.moveTo(x, y);
-
-    // Top edge
-    if (hasTopTab) {
-      ctx.lineTo(x + w * 0.35, y);
-      if (topTabOut) {
-        ctx.bezierCurveTo(
-          x + w * 0.35, y - tabSize,
-          x + w * 0.65, y - tabSize,
-          x + w * 0.65, y
-        );
-      } else {
-        ctx.bezierCurveTo(
-          x + w * 0.35, y + tabSize,
-          x + w * 0.65, y + tabSize,
-          x + w * 0.65, y
-        );
-      }
-    }
-    ctx.lineTo(x + w, y);
-
-    // Right edge
-    if (hasRightTab) {
-      ctx.lineTo(x + w, y + h * 0.35);
-      if (!topTabOut) {
-        ctx.bezierCurveTo(
-          x + w + tabSize, y + h * 0.35,
-          x + w + tabSize, y + h * 0.65,
-          x + w, y + h * 0.65
-        );
-      } else {
-        ctx.bezierCurveTo(
-          x + w - tabSize, y + h * 0.35,
-          x + w - tabSize, y + h * 0.65,
-          x + w, y + h * 0.65
-        );
-      }
-    }
-    ctx.lineTo(x + w, y + h);
-
-    // Bottom edge
-    if (hasBottomTab) {
-      ctx.lineTo(x + w * 0.65, y + h);
-      if (!topTabOut) {
-        ctx.bezierCurveTo(
-          x + w * 0.65, y + h + tabSize,
-          x + w * 0.35, y + h + tabSize,
-          x + w * 0.35, y + h
-        );
-      } else {
-        ctx.bezierCurveTo(
-          x + w * 0.65, y + h - tabSize,
-          x + w * 0.35, y + h - tabSize,
-          x + w * 0.35, y + h
-        );
-      }
-    }
-    ctx.lineTo(x, y + h);
-
-    // Left edge
-    if (hasLeftTab) {
-      ctx.lineTo(x, y + h * 0.65);
-      if (leftTabOut) {
-        ctx.bezierCurveTo(
-          x - tabSize, y + h * 0.65,
-          x - tabSize, y + h * 0.35,
-          x, y + h * 0.35
-        );
-      } else {
-        ctx.bezierCurveTo(
-          x + tabSize, y + h * 0.65,
-          x + tabSize, y + h * 0.35,
-          x, y + h * 0.35
-        );
-      }
-    }
-    ctx.lineTo(x, y);
-
-    ctx.closePath();
-    ctx.clip();
 
     // Draw image portion
     const scaleX = (config.cols * piece.width) / image.width;
@@ -152,18 +48,16 @@ function PuzzlePiece({
       piece.imageY / scaleY,
       piece.width / scaleX,
       piece.height / scaleY,
-      x,
-      y,
+      0,
+      0,
       piece.width,
       piece.height
     );
 
-    ctx.restore();
-
     // Draw piece border
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.lineWidth = 2;
-    ctx.stroke();
+    ctx.strokeRect(0, 0, piece.width, piece.height);
 
   }, [piece, image, config]);
 
@@ -239,9 +133,6 @@ function PuzzlePiece({
     };
   }, [isDragging, dragOffset, piece.id, onDrag, onDragEnd]);
 
-  const tabSize = Math.min(piece.width, piece.height) * 0.2;
-  const margin = tabSize;
-
   return (
     <motion.div
       className={`
@@ -251,10 +142,10 @@ function PuzzlePiece({
         ${piece.isPlaced ? 'pointer-events-none' : ''}
       `}
       style={{
-        left: piece.currentX - margin,
-        top: piece.currentY - margin,
-        width: piece.width + margin * 2,
-        height: piece.height + margin * 2,
+        left: piece.currentX,
+        top: piece.currentY,
+        width: piece.width,
+        height: piece.height,
         zIndex: isDragging ? 1000 : piece.isPlaced ? 1 : 10,
       }}
       initial={{ opacity: 0, scale: 0.8 }}
