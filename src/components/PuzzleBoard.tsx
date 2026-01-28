@@ -10,8 +10,8 @@ interface PuzzleBoardProps {
   onNewPuzzle: () => void;
 }
 
-const ROWS = 4;
-const COLS = 4;
+const ROWS = 6;
+const COLS = 6;
 
 export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -53,8 +53,8 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
 
       // Calculate piece size based on image aspect ratio
       const imageAspect = image.width / image.height;
-      const maxPuzzleWidth = boardWidth * 0.6;
-      const maxPuzzleHeight = boardHeight * 0.7;
+      const maxPuzzleWidth = boardWidth * 0.75;
+      const maxPuzzleHeight = boardHeight * 0.85;
 
       let puzzleWidth: number, puzzleHeight: number;
 
