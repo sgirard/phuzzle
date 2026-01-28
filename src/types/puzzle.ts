@@ -11,6 +11,7 @@ export interface PuzzlePiece {
   height: number;
   imageX: number;
   imageY: number;
+  groupId: number; // Pieces with the same groupId move together
 }
 
 export interface PuzzleConfig {
