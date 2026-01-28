@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink } from 'lucide-react';
 import { PuzzlePiece as PuzzlePieceType, PuzzleConfig } from '@/types/puzzle';
 import { 
   generatePuzzlePieces, 
@@ -11,16 +12,18 @@ import {
 } from '@/utils/puzzleGenerator';
 import PuzzlePieceComponent from './PuzzlePiece';
 import CelebrationOverlay from './CelebrationOverlay';
+import { StockImageInfo } from '@/utils/stockImages';
 
 interface PuzzleBoardProps {
   image: HTMLImageElement;
   onNewPuzzle: () => void;
+  attribution?: StockImageInfo | null;
 }
 
 const ROWS = 6;
 const COLS = 6;
 
-export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
+export default function PuzzleBoard({ image, onNewPuzzle, attribution }: PuzzleBoardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pieces, setPieces] = useState<PuzzlePieceType[]>([]);
   const [config, setConfig] = useState<PuzzleConfig | null>(null);
@@ -264,11 +267,26 @@ export default function PuzzleBoard({ image, onNewPuzzle }: PuzzleBoardProps) {
         />
       )}
 
-      {/* Progress indicator */}
+      {/* Progress indicator and attribution */}
       <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm px-4 py-2 rounded-xl">
         <span className="text-sm text-muted-foreground">
           Pieces placed: {pieces.filter(p => p.isPlaced).length} / {pieces.length}
         </span>
+        {attribution && (
+          <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+            <span>Photo by</span>
+            <a 
+              href={attribution.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-accent hover:underline inline-flex items-center gap-0.5"
+            >
+              {attribution.author}
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <span>via Lorem Picsum</span>
+          </div>
+        )}
       </div>
 
       {/* New puzzle button */}

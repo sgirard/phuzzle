@@ -3,16 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
 import ImageUploader from '@/components/ImageUploader';
 import PuzzleBoard from '@/components/PuzzleBoard';
+import { StockImageInfo } from '@/utils/stockImages';
 
 export default function Index() {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const [attribution, setAttribution] = useState<StockImageInfo | null>(null);
 
-  const handleImageLoad = useCallback((img: HTMLImageElement) => {
+  const handleImageLoad = useCallback((img: HTMLImageElement, attr?: StockImageInfo) => {
     setImage(img);
+    setAttribution(attr || null);
   }, []);
 
   const handleNewPuzzle = useCallback(() => {
     setImage(null);
+    setAttribution(null);
   }, []);
 
   return (
@@ -62,7 +66,7 @@ export default function Index() {
               exit={{ opacity: 0 }}
               className="h-full"
             >
-              <PuzzleBoard image={image} onNewPuzzle={handleNewPuzzle} />
+              <PuzzleBoard image={image} onNewPuzzle={handleNewPuzzle} attribution={attribution} />
             </motion.div>
           )}
         </AnimatePresence>
