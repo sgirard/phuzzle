@@ -54,10 +54,47 @@ function PuzzlePiece({
       piece.height
     );
 
-    // Draw piece border
+    // Draw inner piece border (subtle)
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.strokeRect(0, 0, piece.width, piece.height);
+
+    // Draw black border on edge pieces (3px)
+    const borderWidth = 3;
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = borderWidth;
+
+    // Top edge
+    if (piece.row === 0) {
+      ctx.beginPath();
+      ctx.moveTo(0, borderWidth / 2);
+      ctx.lineTo(piece.width, borderWidth / 2);
+      ctx.stroke();
+    }
+
+    // Bottom edge
+    if (piece.row === config.rows - 1) {
+      ctx.beginPath();
+      ctx.moveTo(0, piece.height - borderWidth / 2);
+      ctx.lineTo(piece.width, piece.height - borderWidth / 2);
+      ctx.stroke();
+    }
+
+    // Left edge
+    if (piece.col === 0) {
+      ctx.beginPath();
+      ctx.moveTo(borderWidth / 2, 0);
+      ctx.lineTo(borderWidth / 2, piece.height);
+      ctx.stroke();
+    }
+
+    // Right edge
+    if (piece.col === config.cols - 1) {
+      ctx.beginPath();
+      ctx.moveTo(piece.width - borderWidth / 2, 0);
+      ctx.lineTo(piece.width - borderWidth / 2, piece.height);
+      ctx.stroke();
+    }
 
   }, [piece, image, config]);
 
