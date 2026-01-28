@@ -91,18 +91,20 @@ export function checkSnap(
     return false;
   }
 
-  // Check if at least one adjacent piece is placed
+  // Edge pieces can always snap into place when close enough
+  const isEdgePiece = piece.row === 0 || piece.row === rows - 1 || 
+                      piece.col === 0 || piece.col === cols - 1;
+  
+  if (isEdgePiece) {
+    return true;
+  }
+
+  // Non-edge pieces need at least one adjacent piece placed
   const adjacentIds = getAdjacentPieceIds(piece, rows, cols);
   const hasAdjacentPlaced = adjacentIds.some(id => {
     const adjacentPiece = pieces.find(p => p.id === id);
     return adjacentPiece?.isPlaced;
   });
-
-  // For corner/edge pieces, allow snapping if it's the first piece
-  const placedCount = pieces.filter(p => p.isPlaced).length;
-  if (placedCount === 0) {
-    return true; // First piece can always snap
-  }
 
   return hasAdjacentPlaced;
 }
