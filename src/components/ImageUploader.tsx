@@ -1,13 +1,15 @@
 import { useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Image as ImageIcon } from 'lucide-react';
+import { Upload, Image as ImageIcon, Shuffle } from 'lucide-react';
+import { fetchRandomStockImage, StockImageInfo } from '@/utils/stockImages';
 
 interface ImageUploaderProps {
-  onImageLoad: (image: HTMLImageElement) => void;
+  onImageLoad: (image: HTMLImageElement, attribution?: StockImageInfo) => void;
 }
 
 export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [isLoadingRandom, setIsLoadingRandom] = useState(false);
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -23,6 +25,18 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
       img.src = e.target?.result as string;
     };
     reader.readAsDataURL(file);
+  }, [onImageLoad]);
+
+  const handleRandomImage = useCallback(async () => {
+    setIsLoadingRandom(true);
+    try {
+      const { image, attribution } = await fetchRandomStockImage();
+      onImageLoad(image, attribution);
+    } catch (error) {
+      console.error('Failed to load random image:', error);
+    } finally {
+      setIsLoadingRandom(false);
+    }
   }, [onImageLoad]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -96,12 +110,38 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
             Drag and drop an image, or click to browse
           </p>
           
-          <div className="mt-6">
+          <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
             <span className="btn-gold px-6 py-3 rounded-xl font-medium inline-block">
               Choose Image
             </span>
           </div>
         </label>
+        
+        <div className="mt-4 pt-4 border-t border-border/50">
+          <p className="text-sm text-muted-foreground mb-3">Or try a random image</p>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleRandomImage}
+            disabled={isLoadingRandom}
+            className="btn-primary px-5 py-2.5 rounded-xl font-medium inline-flex items-center gap-2 disabled:opacity-50"
+          >
+            {isLoadingRandom ? (
+              <>
+                <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                Loading...
+              </>
+            ) : (
+              <>
+                <Shuffle className="w-4 h-4" />
+                Random Stock Image
+              </>
+            )}
+          </motion.button>
+          <p className="text-xs text-muted-foreground mt-2">
+            Free images from Lorem Picsum (CC licensed)
+          </p>
+        </div>
       </div>
     </motion.div>
   );
