@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Eye, EyeOff } from 'lucide-react';
 import { PuzzlePiece as PuzzlePieceType, PuzzleConfig } from '@/types/puzzle';
 import { 
   generatePuzzlePieces, 
@@ -14,6 +14,7 @@ import PuzzlePieceComponent from './PuzzlePiece';
 import CelebrationOverlay from './CelebrationOverlay';
 import { StockImageInfo } from '@/utils/stockImages';
 import { PuzzleGridConfig } from './PuzzleSettings';
+import { Button } from './ui/button';
 
 interface PuzzleBoardProps {
   image: HTMLImageElement;
@@ -32,6 +33,7 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
   const [isComplete, setIsComplete] = useState(false);
   const [boardSize, setBoardSize] = useState({ width: 0, height: 0 });
   const [isReady, setIsReady] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Wait for container to be ready
   useEffect(() => {
@@ -290,15 +292,45 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
         )}
       </div>
 
-      {/* New puzzle button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={onNewPuzzle}
-        className="absolute top-4 right-4 btn-primary px-4 py-2 rounded-xl text-primary-foreground font-medium"
-      >
-        New Puzzle
-      </motion.button>
+      {/* Top right buttons */}
+      <div className="absolute top-4 right-4 flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowPreview(!showPreview)}
+          className="flex items-center gap-2"
+        >
+          {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          {showPreview ? 'Hide Preview' : 'Show Preview'}
+        </Button>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onNewPuzzle}
+          className="btn-primary px-4 py-2 rounded-xl text-primary-foreground font-medium"
+        >
+          New Puzzle
+        </motion.button>
+      </div>
+
+      {/* Image preview overlay */}
+      <AnimatePresence>
+        {showPreview && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="absolute top-16 right-4 bg-card/95 backdrop-blur-sm p-2 rounded-xl shadow-lg border border-border"
+          >
+            <img
+              src={image.src}
+              alt="Puzzle preview"
+              className="max-w-48 max-h-36 rounded-lg object-contain"
+            />
+            <p className="text-xs text-muted-foreground text-center mt-1">Reference Image</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
