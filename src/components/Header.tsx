@@ -13,7 +13,7 @@ export default function Header() {
           <Puzzle className="w-5 h-5 text-accent" />
         </div>
         <h1 className="text-xl font-display font-semibold text-foreground">
-          Jigsaw Studio
+          Photo Puzzle Studio
         </h1>
       </div>
     </motion.header>
