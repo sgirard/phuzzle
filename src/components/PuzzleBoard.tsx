@@ -47,24 +47,68 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
   useEffect(() => {
     if (!isReady || !containerRef.current) return;
 
-    const updateSize = () => {
+    const container = containerRef.current;
+    const boardWidth = container.clientWidth;
+    const boardHeight = container.clientHeight;
+    
+    if (boardWidth === 0 || boardHeight === 0) {
+      console.log('Container has no size yet, waiting...');
+      return;
+    }
+
+    console.log('Initializing puzzle with board size:', boardWidth, boardHeight);
+    setBoardSize({ width: boardWidth, height: boardHeight });
+
+    const imageAspect = image.width / image.height;
+    const maxPuzzleWidth = boardWidth * 0.75;
+    const maxPuzzleHeight = boardHeight * 0.85;
+
+    let puzzleWidth: number, puzzleHeight: number;
+
+    if (maxPuzzleWidth / imageAspect <= maxPuzzleHeight) {
+      puzzleWidth = maxPuzzleWidth;
+      puzzleHeight = puzzleWidth / imageAspect;
+    } else {
+      puzzleHeight = maxPuzzleHeight;
+      puzzleWidth = puzzleHeight * imageAspect;
+    }
+
+    const pieceWidth = puzzleWidth / COLS;
+    const pieceHeight = puzzleHeight / ROWS;
+
+    const newConfig: PuzzleConfig = {
+      rows: ROWS,
+      cols: COLS,
+      pieceWidth,
+      pieceHeight,
+      image,
+      boardWidth,
+      boardHeight,
+    };
+
+    console.log('Puzzle config:', newConfig);
+    setConfig(newConfig);
+    setPieces(generatePuzzlePieces(newConfig));
+    setIsComplete(false);
+  }, [image, isReady]);
+
+  // Handle window resize - scale existing pieces instead of regenerating
+  useEffect(() => {
+    if (!isReady || !config || pieces.length === 0) return;
+
+    const handleResize = () => {
       const container = containerRef.current;
       if (!container) return;
 
-      const boardWidth = container.clientWidth;
-      const boardHeight = container.clientHeight;
+      const newBoardWidth = container.clientWidth;
+      const newBoardHeight = container.clientHeight;
       
-      if (boardWidth === 0 || boardHeight === 0) {
-        console.log('Container has no size yet, waiting...');
-        return;
-      }
-
-      console.log('Initializing puzzle with board size:', boardWidth, boardHeight);
-      setBoardSize({ width: boardWidth, height: boardHeight });
+      if (newBoardWidth === 0 || newBoardHeight === 0) return;
+      if (newBoardWidth === boardSize.width && newBoardHeight === boardSize.height) return;
 
       const imageAspect = image.width / image.height;
-      const maxPuzzleWidth = boardWidth * 0.75;
-      const maxPuzzleHeight = boardHeight * 0.85;
+      const maxPuzzleWidth = newBoardWidth * 0.75;
+      const maxPuzzleHeight = newBoardHeight * 0.85;
 
       let puzzleWidth: number, puzzleHeight: number;
 
@@ -76,29 +120,48 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
         puzzleWidth = puzzleHeight * imageAspect;
       }
 
-      const pieceWidth = puzzleWidth / COLS;
-      const pieceHeight = puzzleHeight / ROWS;
+      const newPieceWidth = puzzleWidth / COLS;
+      const newPieceHeight = puzzleHeight / ROWS;
 
-      const newConfig: PuzzleConfig = {
-        rows: ROWS,
-        cols: COLS,
-        pieceWidth,
-        pieceHeight,
-        image,
-        boardWidth,
-        boardHeight,
-      };
+      // Calculate scale factors
+      const scaleX = newPieceWidth / config.pieceWidth;
+      const scaleY = newPieceHeight / config.pieceHeight;
+      const boardScaleX = newBoardWidth / boardSize.width;
+      const boardScaleY = newBoardHeight / boardSize.height;
 
-      console.log('Puzzle config:', newConfig);
-      setConfig(newConfig);
-      setPieces(generatePuzzlePieces(newConfig));
-      setIsComplete(false);
+      // Update pieces with scaled positions
+      setPieces(prev => prev.map(piece => ({
+        ...piece,
+        width: newPieceWidth,
+        height: newPieceHeight,
+        imageX: piece.col * newPieceWidth,
+        imageY: piece.row * newPieceHeight,
+        correctX: ((newBoardWidth - COLS * newPieceWidth) / 2) + piece.col * newPieceWidth,
+        correctY: ((newBoardHeight - ROWS * newPieceHeight) / 2) + piece.row * newPieceHeight,
+        // For placed pieces, move to new correct position; for unplaced, scale current position
+        currentX: piece.isPlaced 
+          ? ((newBoardWidth - COLS * newPieceWidth) / 2) + piece.col * newPieceWidth
+          : piece.currentX * boardScaleX,
+        currentY: piece.isPlaced
+          ? ((newBoardHeight - ROWS * newPieceHeight) / 2) + piece.row * newPieceHeight
+          : piece.currentY * boardScaleY,
+      })));
+
+      // Update config
+      setConfig(prev => prev ? {
+        ...prev,
+        pieceWidth: newPieceWidth,
+        pieceHeight: newPieceHeight,
+        boardWidth: newBoardWidth,
+        boardHeight: newBoardHeight,
+      } : null);
+
+      setBoardSize({ width: newBoardWidth, height: newBoardHeight });
     };
 
-    updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
-  }, [image, isReady]);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isReady, config, pieces.length, boardSize, image, ROWS, COLS]);
 
   const handleDragStart = useCallback((id: number) => {
     setDraggingId(id);
