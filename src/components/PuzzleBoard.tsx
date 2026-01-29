@@ -10,6 +10,7 @@ import {
   getGroupPieces,
   mergeGroups,
 } from '@/utils/puzzleGenerator';
+import { savePuzzleState } from '@/utils/puzzleStorage';
 import PuzzlePieceComponent from './PuzzlePiece';
 import CelebrationOverlay from './CelebrationOverlay';
 import { StockImageInfo } from '@/utils/stockImages';
@@ -21,9 +22,10 @@ interface PuzzleBoardProps {
   onNewPuzzle: () => void;
   attribution?: StockImageInfo | null;
   gridConfig: PuzzleGridConfig;
+  savedPieces?: PuzzlePieceType[] | null;
 }
 
-export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfig }: PuzzleBoardProps) {
+export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfig, savedPieces }: PuzzleBoardProps) {
   const ROWS = gridConfig.rows;
   const COLS = gridConfig.cols;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -91,9 +93,37 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
 
     console.log('Puzzle config:', newConfig);
     setConfig(newConfig);
-    setPieces(generatePuzzlePieces(newConfig));
+    
+    // Use saved pieces if available, otherwise generate new ones
+    if (savedPieces && savedPieces.length > 0) {
+      // Scale saved pieces to current board size
+      const savedPieceWidth = savedPieces[0].width;
+      const savedPieceHeight = savedPieces[0].height;
+      const scaleX = pieceWidth / savedPieceWidth;
+      const scaleY = pieceHeight / savedPieceHeight;
+      
+      const scaledPieces = savedPieces.map(piece => ({
+        ...piece,
+        width: pieceWidth,
+        height: pieceHeight,
+        imageX: piece.col * pieceWidth,
+        imageY: piece.row * pieceHeight,
+        correctX: ((boardWidth - COLS * pieceWidth) / 2) + piece.col * pieceWidth,
+        correctY: ((boardHeight - ROWS * pieceHeight) / 2) + piece.row * pieceHeight,
+        currentX: piece.isPlaced 
+          ? ((boardWidth - COLS * pieceWidth) / 2) + piece.col * pieceWidth
+          : piece.currentX * scaleX,
+        currentY: piece.isPlaced
+          ? ((boardHeight - ROWS * pieceHeight) / 2) + piece.row * pieceHeight
+          : piece.currentY * scaleY,
+      }));
+      
+      setPieces(scaledPieces);
+    } else {
+      setPieces(generatePuzzlePieces(newConfig));
+    }
     setIsComplete(false);
-  }, [image, isReady]);
+  }, [image, isReady, savedPieces]);
 
   // Handle window resize - scale existing pieces instead of regenerating
   useEffect(() => {
@@ -165,6 +195,18 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [isReady, config, pieces.length, boardSize, image, ROWS, COLS]);
+
+  // Save puzzle state to localStorage whenever pieces change
+  useEffect(() => {
+    if (pieces.length === 0 || isComplete) return;
+    
+    // Debounce saves to avoid excessive writes
+    const timeoutId = setTimeout(() => {
+      savePuzzleState(image.src, pieces, gridConfig, attribution || null);
+    }, 500);
+    
+    return () => clearTimeout(timeoutId);
+  }, [pieces, image.src, gridConfig, attribution, isComplete]);
 
   const handleDragStart = useCallback((id: number) => {
     setDraggingId(id);
