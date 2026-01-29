@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
 import ImageUploader from '@/components/ImageUploader';
 import PuzzleBoard from '@/components/PuzzleBoard';
+import PuzzleSettings, { PuzzleGridConfig, PUZZLE_OPTIONS } from '@/components/PuzzleSettings';
 import { StockImageInfo } from '@/utils/stockImages';
 
 export default function Index() {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [attribution, setAttribution] = useState<StockImageInfo | null>(null);
+  const [gridConfig, setGridConfig] = useState<PuzzleGridConfig>(PUZZLE_OPTIONS[3]); // 6x6 default
 
   const handleImageLoad = useCallback((img: HTMLImageElement, attr?: StockImageInfo) => {
     setImage(img);
@@ -47,6 +49,12 @@ export default function Index() {
                 </p>
               </motion.div>
               
+              <div className="mb-6 flex items-center gap-3">
+                <span className="text-sm text-muted-foreground">Difficulty:</span>
+                <span className="font-medium text-foreground">{gridConfig.label} ({gridConfig.description})</span>
+                <PuzzleSettings currentConfig={gridConfig} onConfigChange={setGridConfig} />
+              </div>
+              
               <ImageUploader onImageLoad={handleImageLoad} />
 
               <motion.div
@@ -66,7 +74,7 @@ export default function Index() {
               exit={{ opacity: 0 }}
               className="h-full"
             >
-              <PuzzleBoard image={image} onNewPuzzle={handleNewPuzzle} attribution={attribution} />
+              <PuzzleBoard image={image} onNewPuzzle={handleNewPuzzle} attribution={attribution} gridConfig={gridConfig} />
             </motion.div>
           )}
         </AnimatePresence>

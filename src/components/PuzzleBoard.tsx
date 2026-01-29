@@ -13,17 +13,18 @@ import {
 import PuzzlePieceComponent from './PuzzlePiece';
 import CelebrationOverlay from './CelebrationOverlay';
 import { StockImageInfo } from '@/utils/stockImages';
+import { PuzzleGridConfig } from './PuzzleSettings';
 
 interface PuzzleBoardProps {
   image: HTMLImageElement;
   onNewPuzzle: () => void;
   attribution?: StockImageInfo | null;
+  gridConfig: PuzzleGridConfig;
 }
 
-const ROWS = 6;
-const COLS = 6;
-
-export default function PuzzleBoard({ image, onNewPuzzle, attribution }: PuzzleBoardProps) {
+export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfig }: PuzzleBoardProps) {
+  const ROWS = gridConfig.rows;
+  const COLS = gridConfig.cols;
   const containerRef = useRef<HTMLDivElement>(null);
   const [pieces, setPieces] = useState<PuzzlePieceType[]>([]);
   const [config, setConfig] = useState<PuzzleConfig | null>(null);
