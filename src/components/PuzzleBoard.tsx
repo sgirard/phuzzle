@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Eye, EyeOff } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { PuzzlePiece as PuzzlePieceType, PuzzleConfig } from '@/types/puzzle';
 import { 
   generatePuzzlePieces, 
@@ -15,7 +15,6 @@ import PuzzlePieceComponent from './PuzzlePiece';
 import CelebrationOverlay from './CelebrationOverlay';
 import { StockImageInfo } from '@/utils/stockImages';
 import { PuzzleGridConfig } from './PuzzleSettings';
-import { Button } from './ui/button';
 
 interface PuzzleBoardProps {
   image: HTMLImageElement;
@@ -23,9 +22,10 @@ interface PuzzleBoardProps {
   attribution?: StockImageInfo | null;
   gridConfig: PuzzleGridConfig;
   savedPieces?: PuzzlePieceType[] | null;
+  showPreview: boolean;
 }
 
-export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfig, savedPieces }: PuzzleBoardProps) {
+export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfig, savedPieces, showPreview }: PuzzleBoardProps) {
   const ROWS = gridConfig.rows;
   const COLS = gridConfig.cols;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,10 +35,6 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
   const [isComplete, setIsComplete] = useState(false);
   const [boardSize, setBoardSize] = useState({ width: 0, height: 0 });
   const [isReady, setIsReady] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewPosition, setPreviewPosition] = useState({ x: 0, y: 0 });
-  const [isDraggingPreview, setIsDraggingPreview] = useState(false);
-  const previewDragOffset = useRef({ x: 0, y: 0 });
 
   // Wait for container to be ready
   useEffect(() => {
@@ -409,26 +405,6 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
         )}
       </div>
 
-      {/* Top right buttons */}
-      <div className="absolute top-4 right-4 flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setShowPreview(!showPreview)}
-          className="flex items-center gap-2"
-        >
-          {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          {showPreview ? 'Hide Preview' : 'Show Preview'}
-        </Button>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onNewPuzzle}
-          className="btn-primary px-4 py-2 rounded-xl text-primary-foreground font-medium"
-        >
-          New Puzzle
-        </motion.button>
-      </div>
 
       {/* Image preview overlay - draggable */}
       <AnimatePresence>

@@ -14,6 +14,7 @@ export default function Index() {
   const [gridConfig, setGridConfig] = useState<PuzzleGridConfig>(PUZZLE_OPTIONS[0]);
   const [savedPieces, setSavedPieces] = useState<PuzzlePiece[] | null>(null);
   const [isLoadingSaved, setIsLoadingSaved] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Load saved puzzle state on mount
   useEffect(() => {
@@ -46,12 +47,18 @@ export default function Index() {
     setImage(null);
     setAttribution(null);
     setSavedPieces(null);
+    setShowPreview(false);
     clearPuzzleState();
   }, []);
 
   return (
     <div className="relative min-h-screen bg-background overflow-hidden">
-      <Header />
+      <Header 
+        showControls={!!image} 
+        showPreview={showPreview} 
+        onTogglePreview={() => setShowPreview(!showPreview)} 
+        onNewPuzzle={handleNewPuzzle} 
+      />
       
       <main className="h-screen pt-16">
         <AnimatePresence mode="wait">
@@ -102,7 +109,7 @@ export default function Index() {
               exit={{ opacity: 0 }}
               className="h-full"
             >
-              <PuzzleBoard image={image} onNewPuzzle={handleNewPuzzle} attribution={attribution} gridConfig={gridConfig} savedPieces={savedPieces} />
+              <PuzzleBoard image={image} onNewPuzzle={handleNewPuzzle} attribution={attribution} gridConfig={gridConfig} savedPieces={savedPieces} showPreview={showPreview} />
             </motion.div>
           )}
         </AnimatePresence>
