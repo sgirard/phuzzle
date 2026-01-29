@@ -323,11 +323,17 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
     });
   }, []);
 
+  // Prevent scrolling on touch devices
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+  }, []);
+
   if (!config || !isReady) {
     return (
       <div 
         ref={containerRef}
-        className="relative w-full h-full puzzle-table wood-texture flex items-center justify-center"
+        className="relative w-full h-full puzzle-table wood-texture flex items-center justify-center touch-none"
+        onTouchMove={handleTouchMove}
       >
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-4 border-accent border-t-transparent rounded-full mx-auto mb-4" />
@@ -340,7 +346,8 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full puzzle-table wood-texture overflow-hidden"
+      className="relative w-full h-full puzzle-table wood-texture overflow-hidden touch-none"
+      onTouchMove={handleTouchMove}
     >
       {/* Puzzle frame/guide */}
       <div
