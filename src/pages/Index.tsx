@@ -9,7 +9,7 @@ import { StockImageInfo } from '@/utils/stockImages';
 export default function Index() {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [attribution, setAttribution] = useState<StockImageInfo | null>(null);
-  const [gridConfig, setGridConfig] = useState<PuzzleGridConfig>(PUZZLE_OPTIONS[3]); // 6x6 default
+  const [gridConfig, setGridConfig] = useState<PuzzleGridConfig>(PUZZLE_OPTIONS[0]); // 6x6 default
 
   const handleImageLoad = useCallback((img: HTMLImageElement, attr?: StockImageInfo) => {
     setImage(img);

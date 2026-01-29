@@ -18,12 +18,12 @@ export interface PuzzleGridConfig {
 }
 
 const PUZZLE_OPTIONS: PuzzleGridConfig[] = [
-  { rows: 3, cols: 3, label: '3×3', description: '9 pieces - Easy' },
-  { rows: 4, cols: 4, label: '4×4', description: '16 pieces - Beginner' },
-  { rows: 5, cols: 5, label: '5×5', description: '25 pieces - Medium' },
-  { rows: 6, cols: 6, label: '6×6', description: '36 pieces - Standard' },
-  { rows: 8, cols: 8, label: '8×8', description: '64 pieces - Challenging' },
-  { rows: 10, cols: 10, label: '10×10', description: '100 pieces - Expert' },
+  { rows: 6, cols: 6, label: '6×6', description: '36 pieces - Easy' },
+  { rows: 8, cols: 8, label: '8×8', description: '64 pieces - Medium' },
+  { rows: 9, cols: 9, label: '9×9', description: '81 pieces - Standard' },
+  { rows: 10, cols: 10, label: '10×10', description: '100 pieces - Challenging' },
+  { rows: 12, cols: 12, label: '12×12', description: '144 pieces - Hard' },
+  { rows: 14, cols: 14, label: '14×14', description: '196 pieces - Expert' },
 ];
 
 interface PuzzleSettingsProps {
