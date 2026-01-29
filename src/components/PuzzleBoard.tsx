@@ -34,6 +34,9 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
   const [boardSize, setBoardSize] = useState({ width: 0, height: 0 });
   const [isReady, setIsReady] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [previewPosition, setPreviewPosition] = useState({ x: 0, y: 0 });
+  const [isDraggingPreview, setIsDraggingPreview] = useState(false);
+  const previewDragOffset = useRef({ x: 0, y: 0 });
 
   // Wait for container to be ready
   useEffect(() => {
@@ -376,21 +379,25 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
         </motion.button>
       </div>
 
-      {/* Image preview overlay */}
+      {/* Image preview overlay - draggable */}
       <AnimatePresence>
         {showPreview && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="absolute top-16 right-4 bg-card/95 backdrop-blur-sm p-2 rounded-xl shadow-lg border border-border"
+            drag
+            dragMomentum={false}
+            dragConstraints={containerRef}
+            className="absolute top-16 right-4 bg-card/95 backdrop-blur-sm p-2 rounded-xl shadow-lg border border-border cursor-move select-none"
+            style={{ zIndex: 2000 }}
           >
             <img
               src={image.src}
               alt="Puzzle preview"
-              className="max-w-48 max-h-36 rounded-lg object-contain"
+              className="max-w-48 max-h-36 rounded-lg object-contain pointer-events-none"
             />
-            <p className="text-xs text-muted-foreground text-center mt-1">Reference Image</p>
+            <p className="text-xs text-muted-foreground text-center mt-1 pointer-events-none">Reference Image (drag to move)</p>
           </motion.div>
         )}
       </AnimatePresence>
