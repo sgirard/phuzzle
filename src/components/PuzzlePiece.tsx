@@ -136,6 +136,9 @@ function PuzzlePiece({
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (piece.isPlaced) return;
     
+    // Prevent iOS text selection and context menu
+    e.preventDefault();
+    
     const touch = e.touches[0];
     const rect = (e.target as HTMLElement).getBoundingClientRect();
     setDragOffset({
@@ -199,7 +202,10 @@ function PuzzlePiece({
         width: piece.width,
         height: piece.height,
         zIndex: isDragging ? 1000 : piece.isPlaced ? 1 : 10,
-      }}
+        touchAction: 'none',
+        WebkitUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+      } as React.CSSProperties}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ 
         opacity: 1, 
@@ -216,7 +222,11 @@ function PuzzlePiece({
     >
       <canvas
         ref={canvasRef}
-        className="w-full h-full"
+        className="w-full h-full pointer-events-none"
+        style={{
+          WebkitUserSelect: 'none',
+          WebkitTouchCallout: 'none',
+        } as React.CSSProperties}
       />
     </motion.div>
   );
