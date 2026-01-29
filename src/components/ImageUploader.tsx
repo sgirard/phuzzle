@@ -107,7 +107,10 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
           </h3>
           
           <p className="text-muted-foreground">
-            Drag and drop an image, or click to browse — stays on your device
+            Drag and drop an image, or click to browse
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            (stays on your device)
           </p>
           
           <div className="mt-6 flex justify-center">

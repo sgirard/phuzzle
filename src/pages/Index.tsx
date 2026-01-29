@@ -80,7 +80,7 @@ export default function Index() {
                   Create Your Puzzle
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-md mx-auto">
-                  Upload any image and transform it into a fun jigsaw puzzle you can solve right in your browser
+                  Transform any image into a fun photo tile puzzle you can solve right in your browser
                 </p>
               </motion.div>
               
