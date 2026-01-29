@@ -1,24 +1,52 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
 import ImageUploader from '@/components/ImageUploader';
 import PuzzleBoard from '@/components/PuzzleBoard';
 import PuzzleSettings, { PuzzleGridConfig, PUZZLE_OPTIONS } from '@/components/PuzzleSettings';
 import { StockImageInfo } from '@/utils/stockImages';
+import { PuzzlePiece } from '@/types/puzzle';
+import { loadPuzzleState, loadImageFromSrc, clearPuzzleState } from '@/utils/puzzleStorage';
 
 export default function Index() {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [attribution, setAttribution] = useState<StockImageInfo | null>(null);
-  const [gridConfig, setGridConfig] = useState<PuzzleGridConfig>(PUZZLE_OPTIONS[0]); // 6x6 default
+  const [gridConfig, setGridConfig] = useState<PuzzleGridConfig>(PUZZLE_OPTIONS[0]);
+  const [savedPieces, setSavedPieces] = useState<PuzzlePiece[] | null>(null);
+  const [isLoadingSaved, setIsLoadingSaved] = useState(true);
+
+  // Load saved puzzle state on mount
+  useEffect(() => {
+    const loadSaved = async () => {
+      const saved = loadPuzzleState();
+      if (saved) {
+        try {
+          const img = await loadImageFromSrc(saved.imageSrc);
+          setImage(img);
+          setAttribution(saved.attribution);
+          setGridConfig(saved.gridConfig);
+          setSavedPieces(saved.pieces);
+        } catch (error) {
+          console.warn('Failed to restore saved puzzle:', error);
+          clearPuzzleState();
+        }
+      }
+      setIsLoadingSaved(false);
+    };
+    loadSaved();
+  }, []);
 
   const handleImageLoad = useCallback((img: HTMLImageElement, attr?: StockImageInfo) => {
     setImage(img);
     setAttribution(attr || null);
+    setSavedPieces(null); // Clear saved pieces for new image
   }, []);
 
   const handleNewPuzzle = useCallback(() => {
     setImage(null);
     setAttribution(null);
+    setSavedPieces(null);
+    clearPuzzleState();
   }, []);
 
   return (
@@ -74,7 +102,7 @@ export default function Index() {
               exit={{ opacity: 0 }}
               className="h-full"
             >
-              <PuzzleBoard image={image} onNewPuzzle={handleNewPuzzle} attribution={attribution} gridConfig={gridConfig} />
+              <PuzzleBoard image={image} onNewPuzzle={handleNewPuzzle} attribution={attribution} gridConfig={gridConfig} savedPieces={savedPieces} />
             </motion.div>
           )}
         </AnimatePresence>
