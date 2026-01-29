@@ -103,11 +103,11 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
           </motion.div>
           
           <h3 className="text-xl font-display font-semibold text-foreground mb-2">
-            {isDragging ? 'Drop your image!' : 'Upload a Photo'}
+            {isDragging ? 'Drop your image!' : 'Choose a Photo'}
           </h3>
           
           <p className="text-muted-foreground">
-            Drag and drop an image, or click to browse
+            Drag and drop an image, or click to browse — stays on your device
           </p>
           
           <div className="mt-6 flex justify-center">
