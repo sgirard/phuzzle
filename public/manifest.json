@@ -1,7 +1,7 @@
 {
-  "name": "Jigsaw Studio",
-  "short_name": "Jigsaw",
-  "description": "Create and solve jigsaw puzzles in your browser",
+  "name": "Photo Puzzle Studio",
+  "short_name": "Photo Puzzle",
+  "description": "Create and solve photo tile puzzles in your browser",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0b",
