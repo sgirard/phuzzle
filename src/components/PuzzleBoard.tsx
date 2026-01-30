@@ -384,25 +384,27 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
       )}
 
       {/* Progress indicator and attribution */}
-      <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm px-4 py-2 rounded-xl">
-        <span className="text-sm text-muted-foreground">
-          Pieces placed: {pieces.filter(p => p.isPlaced).length} / {pieces.length}
-        </span>
-        {attribution && (
-          <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-            <span>Photo by</span>
-            <a 
-              href={attribution.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-accent hover:underline inline-flex items-center gap-0.5"
-            >
-              {attribution.author}
-              <ExternalLink className="w-3 h-3" />
-            </a>
-            <span>via Lorem Picsum</span>
-          </div>
-        )}
+      <div className="absolute bottom-4 left-4 right-4 sm:right-auto bg-card/90 backdrop-blur-sm px-3 py-2 sm:px-4 rounded-xl z-10">
+        <div className="flex flex-col xs:flex-row xs:items-center xs:gap-3 landscape-mobile:flex-row landscape-mobile:items-center landscape-mobile:gap-3">
+          <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
+            Pieces: {pieces.filter(p => p.isPlaced).length} / {pieces.length}
+          </span>
+          {attribution && (
+            <div className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
+              <span>Photo by</span>
+              <a 
+                href={attribution.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-accent hover:underline inline-flex items-center gap-0.5"
+              >
+                {attribution.author}
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <span className="hidden xs:inline landscape-mobile:inline">via Lorem Picsum</span>
+            </div>
+          )}
+        </div>
       </div>
 
 
