@@ -14,34 +14,36 @@ export default function Header({ showPreview, onTogglePreview, onNewPuzzle, show
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="absolute top-0 left-0 right-0 z-10 p-4"
+      className="absolute top-0 left-0 right-0 z-20 p-4 pt-[max(1rem,env(safe-area-inset-top))]"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-accent/20">
-            <Puzzle className="w-5 h-5 text-accent" />
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-accent/20">
+            <Puzzle className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
           </div>
-          <h1 className="text-xl font-display font-semibold text-foreground">
+          <h1 className="text-lg sm:text-xl font-display font-semibold text-foreground">
             Phuzzle
           </h1>
         </div>
         
         {showControls && (
-          <div className="flex gap-2">
+          <div className="flex gap-1 sm:gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={onTogglePreview}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 h-8 sm:h-9"
             >
-              {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              {showPreview ? 'Hide Preview' : 'Show Preview'}
+              {showPreview ? <EyeOff className="w-3 h-3 sm:w-4 sm:h-4" /> : <Eye className="w-3 h-3 sm:w-4 sm:h-4" />}
+              <span className="hidden xs:inline">{showPreview ? 'Hide' : 'Show'}</span>
+              <span className="xs:hidden">{showPreview ? <EyeOff className="w-0 h-0" /> : null}</span>
+              <span className="hidden sm:inline">Preview</span>
             </Button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onNewPuzzle}
-              className="btn-primary px-4 py-2 rounded-xl text-primary-foreground font-medium"
+              className="btn-primary px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-primary-foreground font-medium text-xs sm:text-sm whitespace-nowrap"
             >
               New Phuzzle
             </motion.button>
