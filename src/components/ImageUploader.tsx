@@ -77,7 +77,7 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={`
-          upload-zone rounded-2xl p-12 text-center
+          upload-zone rounded-2xl p-6 sm:p-12 text-center
           ${isDragging ? 'upload-zone-active' : ''}
           cursor-pointer transition-all duration-300
         `}
@@ -93,12 +93,12 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
           <motion.div
             animate={isDragging ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 300 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-6"
+            className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-muted mb-4 sm:mb-6"
           >
             {isDragging ? (
-              <ImageIcon className="w-10 h-10 text-accent" />
+              <ImageIcon className="w-7 h-7 sm:w-10 sm:h-10 text-accent" />
             ) : (
-              <Upload className="w-10 h-10 text-muted-foreground" />
+              <Upload className="w-7 h-7 sm:w-10 sm:h-10 text-muted-foreground" />
             )}
           </motion.div>
           
