@@ -52,7 +52,7 @@ export default function CelebrationOverlay({ onNewPuzzle, onViewPuzzle }: Celebr
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50"
+      className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-10 pt-16"
     >
       <motion.div
         initial={{ scale: 0.5, opacity: 0 }}
