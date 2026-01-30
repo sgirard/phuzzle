@@ -70,16 +70,17 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-lg mx-auto"
+      className="w-full max-w-lg mx-auto landscape:max-w-2xl"
     >
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={`
-          upload-zone rounded-2xl p-6 sm:p-12 text-center
+          upload-zone rounded-2xl p-4 sm:p-6 landscape:p-3 text-center
           ${isDragging ? 'upload-zone-active' : ''}
           cursor-pointer transition-all duration-300
+          landscape:flex landscape:items-center landscape:gap-4 landscape:text-left
         `}
       >
         <input
@@ -89,61 +90,60 @@ export default function ImageUploader({ onImageLoad }: ImageUploaderProps) {
           className="hidden"
           id="file-upload"
         />
-        <label htmlFor="file-upload" className="cursor-pointer block">
+        <label htmlFor="file-upload" className="cursor-pointer block landscape:flex landscape:items-center landscape:gap-4 landscape:flex-1">
           <motion.div
             animate={isDragging ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 300 }}
-            className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-muted mb-4 sm:mb-6"
+            className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 landscape:w-10 landscape:h-10 rounded-full bg-muted mb-3 sm:mb-4 landscape:mb-0 landscape:shrink-0"
           >
             {isDragging ? (
-              <ImageIcon className="w-7 h-7 sm:w-10 sm:h-10 text-accent" />
+              <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 landscape:w-5 landscape:h-5 text-accent" />
             ) : (
-              <Upload className="w-7 h-7 sm:w-10 sm:h-10 text-muted-foreground" />
+              <Upload className="w-6 h-6 sm:w-7 sm:h-7 landscape:w-5 landscape:h-5 text-muted-foreground" />
             )}
           </motion.div>
           
-          <h3 className="text-xl font-display font-semibold text-foreground mb-2">
-            {isDragging ? 'Drop your image!' : 'Choose a Photo'}
-          </h3>
+          <div className="landscape:flex-1">
+            <h3 className="text-lg sm:text-xl landscape:text-base font-display font-semibold text-foreground mb-1 sm:mb-2 landscape:mb-0.5">
+              {isDragging ? 'Drop your image!' : 'Choose a Photo'}
+            </h3>
+            
+            <p className="text-sm landscape:text-xs text-muted-foreground">
+              Drag and drop an image, or click to browse
+            </p>
+            <p className="text-xs landscape:hidden text-muted-foreground mt-1">
+              (stays on your device)
+            </p>
+          </div>
           
-          <p className="text-muted-foreground">
-            Drag and drop an image, or click to browse
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
-            (stays on your device)
-          </p>
-          
-          <div className="mt-6 flex justify-center">
-            <span className="btn-gold px-6 py-3 rounded-xl font-medium inline-block">
+          <div className="mt-4 landscape:mt-0 landscape:shrink-0">
+            <span className="btn-gold px-4 py-2 sm:px-6 sm:py-3 landscape:px-4 landscape:py-2 rounded-xl font-medium inline-block text-sm sm:text-base landscape:text-sm">
               Choose Image
             </span>
           </div>
         </label>
         
-        <div className="mt-4 pt-4 border-t border-border/50">
-          <p className="text-sm text-muted-foreground mb-3">Or try a random image</p>
+        <div className="mt-3 pt-3 landscape:mt-0 landscape:pt-0 landscape:border-t-0 landscape:border-l landscape:pl-4 border-t border-border/50 landscape:shrink-0">
+          <p className="text-xs text-muted-foreground mb-2 landscape:mb-1.5">Or try a random image</p>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleRandomImage}
             disabled={isLoadingRandom}
-            className="btn-primary px-5 py-2.5 rounded-xl font-medium inline-flex items-center gap-2 disabled:opacity-50"
+            className="btn-primary px-4 py-2 landscape:px-3 landscape:py-1.5 rounded-xl font-medium inline-flex items-center gap-2 disabled:opacity-50 text-sm landscape:text-xs"
           >
             {isLoadingRandom ? (
               <>
-                <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 landscape:w-3 landscape:h-3 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                 Loading...
               </>
             ) : (
               <>
-                <Shuffle className="w-4 h-4" />
-                Random Stock Image
+                <Shuffle className="w-4 h-4 landscape:w-3 landscape:h-3" />
+                Random Image
               </>
             )}
           </motion.button>
-          <p className="text-xs text-muted-foreground mt-2">
-            Free images from Lorem Picsum (CC licensed)
-          </p>
         </div>
       </div>
     </motion.div>
