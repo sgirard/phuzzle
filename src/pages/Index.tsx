@@ -76,8 +76,8 @@ export default function Index() {
                 transition={{ delay: 0.2 }}
                 className="text-center mb-12"
               >
-                <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-                  Create Your Puzzle
+                <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
+                  Create Your Phuzzle
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-md mx-auto">
                   Transform any image into a fun photo tile puzzle you can solve right in your browser
