@@ -14,7 +14,7 @@ export default function Header({ showPreview, onTogglePreview, onNewPuzzle, show
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="absolute top-0 left-0 right-0 z-20 p-4 pt-[max(1rem,env(safe-area-inset-top))]"
+      className="absolute top-0 left-0 right-0 z-20 p-4 pt-2 sm:pt-[max(1rem,env(safe-area-inset-top))]"
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
