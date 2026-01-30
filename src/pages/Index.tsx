@@ -76,7 +76,7 @@ export default function Index() {
                 transition={{ delay: 0.2 }}
                 className="text-center mb-6 sm:mb-12"
               >
-                <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
+                <h2 className="text-3xl md:text-5xl landscape-mobile:text-2xl font-display font-bold text-foreground mb-4">
                   Create Your Phuzzle
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-md mx-auto">
