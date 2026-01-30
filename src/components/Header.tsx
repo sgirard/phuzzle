@@ -43,7 +43,7 @@ export default function Header({ showPreview, onTogglePreview, onNewPuzzle, show
               onClick={onNewPuzzle}
               className="btn-primary px-4 py-2 rounded-xl text-primary-foreground font-medium"
             >
-              New Puzzle
+              New Phuzzle
             </motion.button>
           </div>
         )}
