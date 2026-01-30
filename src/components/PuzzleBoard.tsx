@@ -384,7 +384,7 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
       )}
 
       {/* Progress indicator and attribution */}
-      <div className="absolute left-4 right-4 bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] sm:bottom-4 sm:right-auto bg-card/90 backdrop-blur-sm px-3 py-2 sm:px-4 rounded-xl z-[2100] sm:z-10">
+      <div className="absolute left-4 right-4 bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] sm:bottom-4 sm:right-auto bg-card/90 backdrop-blur-sm px-3 py-2 sm:px-4 rounded-xl z-10 pointer-events-none">
         <div className="flex flex-col xs:flex-row xs:items-center xs:gap-3 landscape-mobile:flex-row landscape-mobile:items-center landscape-mobile:gap-3">
           <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
             Pieces: {pieces.filter(p => p.isPlaced).length} / {pieces.length}
