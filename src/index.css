@@ -95,8 +95,10 @@
   }
 
   html {
-    /* Support iOS safe areas for notch/Dynamic Island */
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    /* Avoid double-applying safe-area spacing (handled in components).
+       Keep horizontal safe-area padding for notches in landscape. */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
   body {
