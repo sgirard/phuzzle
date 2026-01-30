@@ -68,25 +68,25 @@ export default function Index() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="h-full flex flex-col items-center justify-center px-4 landscape:py-2"
+              className="h-full flex flex-col items-center justify-center px-4"
             >
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-center mb-4 sm:mb-6 landscape:mb-2"
+                className="text-center mb-6 sm:mb-12"
               >
-                <h2 className="text-2xl sm:text-3xl md:text-5xl landscape:text-xl font-display font-bold text-foreground mb-2 sm:mb-4 landscape:mb-1">
+                <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
                   Create Your Phuzzle
                 </h2>
-                <p className="text-base sm:text-lg landscape:text-sm text-muted-foreground max-w-md mx-auto landscape:hidden">
+                <p className="text-lg text-muted-foreground max-w-md mx-auto">
                   Transform any image into a fun photo tile puzzle you can solve right in your browser
                 </p>
               </motion.div>
               
-              <div className="mb-4 sm:mb-6 landscape:mb-2 flex items-center gap-2 sm:gap-3">
-                <span className="text-xs sm:text-sm text-muted-foreground">Difficulty:</span>
-                <span className="font-medium text-foreground text-sm sm:text-base">{gridConfig.label} ({gridConfig.description})</span>
+              <div className="mb-6 flex items-center gap-3">
+                <span className="text-sm text-muted-foreground">Difficulty:</span>
+                <span className="font-medium text-foreground">{gridConfig.label} ({gridConfig.description})</span>
                 <PuzzleSettings currentConfig={gridConfig} onConfigChange={setGridConfig} />
               </div>
               
