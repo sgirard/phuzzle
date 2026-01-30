@@ -20,6 +20,8 @@ export default {
       'lg': '1024px',
       'xl': '1280px',
       '2xl': '1536px',
+      // Landscape mobile: short height + wide width + landscape orientation
+      'landscape-mobile': { 'raw': '(max-height: 500px) and (min-width: 568px) and (orientation: landscape)' },
     },
     extend: {
       fontFamily: {
