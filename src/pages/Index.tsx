@@ -60,7 +60,7 @@ export default function Index() {
         onNewPuzzle={handleNewPuzzle} 
       />
       
-      <main className="h-screen pt-16">
+      <main className="h-[100dvh] sm:h-screen pt-16">
         <AnimatePresence mode="wait">
           {!image ? (
             <motion.div
