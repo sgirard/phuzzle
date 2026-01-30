@@ -22,7 +22,7 @@ export default function Header({ showPreview, onTogglePreview, onNewPuzzle, show
             <Puzzle className="w-5 h-5 text-accent" />
           </div>
           <h1 className="text-xl font-display font-semibold text-foreground">
-            Photo Puzzle Studio
+            Phuzzle
           </h1>
         </div>
         
