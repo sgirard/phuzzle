@@ -97,7 +97,7 @@ export default function CelebrationOverlay({ onNewPuzzle, onViewPuzzle }: Celebr
             className="btn-gold px-8 py-4 rounded-xl font-display font-semibold text-lg inline-flex items-center gap-3"
           >
             <RotateCcw className="w-5 h-5" />
-            Start New Puzzle
+            Start New Phuzzle
           </motion.button>
           
           <motion.button
