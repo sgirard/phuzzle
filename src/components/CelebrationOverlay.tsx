@@ -81,7 +81,7 @@ export default function CelebrationOverlay({ onNewPuzzle, onViewPuzzle }: Celebr
         </motion.div>
 
         <h2 className="text-3xl font-display font-bold text-foreground mb-3">
-          Puzzle Complete!
+          Phuzzle Complete!
         </h2>
         
         <p className="text-muted-foreground mb-8">
@@ -106,7 +106,7 @@ export default function CelebrationOverlay({ onNewPuzzle, onViewPuzzle }: Celebr
             onClick={onViewPuzzle}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
           >
-            View completed puzzle
+            View completed phuzzle
           </motion.button>
         </div>
       </motion.div>
