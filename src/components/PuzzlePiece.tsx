@@ -113,10 +113,16 @@ function PuzzlePiece({
 
   }, [piece, image, config]);
 
-  // Handle placement animation
+  // Handle placement animation and haptic feedback
   useEffect(() => {
     if (piece.isPlaced) {
       setWasJustPlaced(true);
+      
+      // Trigger haptic feedback on supported devices (Android)
+      if (navigator.vibrate) {
+        navigator.vibrate(15); // Short 15ms buzz
+      }
+      
       const timer = setTimeout(() => setWasJustPlaced(false), 300);
       return () => clearTimeout(timer);
     }
