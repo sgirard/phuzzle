@@ -286,6 +286,10 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
             return placedPiece;
           });
 
+          // Trigger haptic feedback directly in gesture handler (required by Chrome)
+          if (navigator.vibrate) {
+            navigator.vibrate(50);
+          }
 
           if (isPuzzleComplete(updatedPieces)) {
             setTimeout(() => setIsComplete(true), 300);
