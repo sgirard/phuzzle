@@ -2,9 +2,40 @@ import { PuzzlePiece, PuzzleConfig } from '@/types/puzzle';
 
 export const SNAP_THRESHOLD = 30;
 
+// Check if a position overlaps with a rectangular zone
+function overlapsZone(
+  x: number, y: number, width: number, height: number,
+  zoneX: number, zoneY: number, zoneWidth: number, zoneHeight: number
+): boolean {
+  return !(x + width <= zoneX || x >= zoneX + zoneWidth ||
+           y + height <= zoneY || y >= zoneY + zoneHeight);
+}
+
 export function generatePuzzlePieces(config: PuzzleConfig): PuzzlePiece[] {
   const { rows, cols, pieceWidth, pieceHeight, boardWidth, boardHeight } = config;
   const pieces: PuzzlePiece[] = [];
+
+  const margin = 50;
+  const puzzleAreaWidth = cols * pieceWidth;
+  const puzzleAreaHeight = rows * pieceHeight;
+  const puzzleOffsetX = (boardWidth - puzzleAreaWidth) / 2;
+  const puzzleOffsetY = (boardHeight - puzzleAreaHeight) / 2;
+
+  // Define exclusion zones
+  const puzzleZone = {
+    x: puzzleOffsetX - margin / 2,
+    y: puzzleOffsetY - margin / 2,
+    width: puzzleAreaWidth + margin,
+    height: puzzleAreaHeight + margin,
+  };
+
+  // Attribution zone in bottom-left (approximate size based on typical attribution)
+  const attributionZone = {
+    x: 0,
+    y: boardHeight - 80,
+    width: 280,
+    height: 80,
+  };
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -12,33 +43,26 @@ export function generatePuzzlePieces(config: PuzzleConfig): PuzzlePiece[] {
       const correctX = col * pieceWidth;
       const correctY = row * pieceHeight;
       
-      // Random initial position around the board edges
-      const side = Math.floor(Math.random() * 4);
       let currentX: number, currentY: number;
+      let attempts = 0;
+      const maxAttempts = 100;
       
-      const margin = 50;
-      const puzzleAreaWidth = cols * pieceWidth;
-      const puzzleAreaHeight = rows * pieceHeight;
-      const puzzleOffsetX = (boardWidth - puzzleAreaWidth) / 2;
-      const puzzleOffsetY = (boardHeight - puzzleAreaHeight) / 2;
-      
-      switch (side) {
-        case 0: // Left
-          currentX = margin + Math.random() * (puzzleOffsetX - pieceWidth - margin * 2);
-          currentY = margin + Math.random() * (boardHeight - pieceHeight - margin * 2);
-          break;
-        case 1: // Right
-          currentX = puzzleOffsetX + puzzleAreaWidth + margin + Math.random() * (puzzleOffsetX - pieceWidth - margin * 2);
-          currentY = margin + Math.random() * (boardHeight - pieceHeight - margin * 2);
-          break;
-        case 2: // Top
-          currentX = margin + Math.random() * (boardWidth - pieceWidth - margin * 2);
-          currentY = margin + Math.random() * (puzzleOffsetY - pieceHeight - margin * 2);
-          break;
-        default: // Bottom
-          currentX = margin + Math.random() * (boardWidth - pieceWidth - margin * 2);
-          currentY = puzzleOffsetY + puzzleAreaHeight + margin + Math.random() * (puzzleOffsetY - pieceHeight - margin * 2);
-      }
+      // Keep trying random positions until we find one outside exclusion zones
+      do {
+        // Generate random position within board bounds
+        currentX = margin + Math.random() * (boardWidth - pieceWidth - margin * 2);
+        currentY = margin + Math.random() * (boardHeight - pieceHeight - margin * 2);
+        attempts++;
+        
+        // If we've tried too many times, just accept the position
+        if (attempts >= maxAttempts) break;
+        
+      } while (
+        overlapsZone(currentX, currentY, pieceWidth, pieceHeight,
+                     puzzleZone.x, puzzleZone.y, puzzleZone.width, puzzleZone.height) ||
+        overlapsZone(currentX, currentY, pieceWidth, pieceHeight,
+                     attributionZone.x, attributionZone.y, attributionZone.width, attributionZone.height)
+      );
 
       // Ensure pieces are within bounds
       currentX = Math.max(margin, Math.min(currentX, boardWidth - pieceWidth - margin));
