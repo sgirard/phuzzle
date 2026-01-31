@@ -13,8 +13,17 @@ import {
 import { savePuzzleState } from '@/utils/puzzleStorage';
 import PuzzlePieceComponent from './PuzzlePiece';
 import CelebrationOverlay from './CelebrationOverlay';
+import PlacementSparkles from './PlacementSparkles';
 import { StockImageInfo } from '@/utils/stockImages';
 import { PuzzleGridConfig } from './PuzzleSettings';
+
+interface SparkleEffect {
+  id: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 interface PuzzleBoardProps {
   image: HTMLImageElement;
@@ -35,6 +44,24 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
   const [isComplete, setIsComplete] = useState(false);
   const [boardSize, setBoardSize] = useState({ width: 0, height: 0 });
   const [isReady, setIsReady] = useState(false);
+  const [sparkles, setSparkles] = useState<SparkleEffect[]>([]);
+  const sparkleIdRef = useRef(0);
+
+  // Function to trigger sparkles for placed pieces
+  const triggerSparkles = useCallback((placedPieces: PuzzlePieceType[]) => {
+    const newSparkles = placedPieces.map(piece => ({
+      id: sparkleIdRef.current++,
+      x: piece.correctX,
+      y: piece.correctY,
+      width: piece.width,
+      height: piece.height,
+    }));
+    setSparkles(prev => [...prev, ...newSparkles]);
+  }, []);
+
+  const removeSparkle = useCallback((id: number) => {
+    setSparkles(prev => prev.filter(s => s.id !== id));
+  }, []);
 
   // Wait for container to be ready
   useEffect(() => {
@@ -272,18 +299,22 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
       for (const groupPiece of groupPieces) {
         if (checkFinalSnap(groupPiece, updatedPieces, ROWS, COLS)) {
           // Snap entire group to final position
-          const offsetX = groupPiece.correctX - groupPiece.currentX;
-          const offsetY = groupPiece.correctY - groupPiece.currentY;
+          const piecesToPlace: PuzzlePieceType[] = [];
           
           updatedPieces = updatedPieces.map(p => {
             if (p.groupId !== piece.groupId) return p;
-            return {
+            const placedPiece = {
               ...p,
               currentX: p.correctX,
               currentY: p.correctY,
               isPlaced: true,
             };
+            piecesToPlace.push(placedPiece);
+            return placedPiece;
           });
+
+          // Trigger sparkle effects for newly placed pieces
+          triggerSparkles(piecesToPlace);
 
           if (isPuzzleComplete(updatedPieces)) {
             setTimeout(() => setIsComplete(true), 300);
@@ -382,6 +413,18 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
           onViewPuzzle={() => setIsComplete(false)} 
         />
       )}
+
+      {/* Sparkle effects */}
+      {sparkles.map(sparkle => (
+        <PlacementSparkles
+          key={sparkle.id}
+          x={sparkle.x}
+          y={sparkle.y}
+          width={sparkle.width}
+          height={sparkle.height}
+          onComplete={() => removeSparkle(sparkle.id)}
+        />
+      ))}
 
       {/* Progress indicator and attribution */}
       <div className="absolute left-4 right-4 bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] sm:bottom-4 sm:right-auto bg-card/90 backdrop-blur-sm px-3 py-2 sm:px-4 rounded-xl z-10 pointer-events-none">
