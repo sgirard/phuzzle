@@ -49,7 +49,9 @@ export default function CelebrationOverlay({}: CelebrationOverlayProps) {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="absolute top-16 left-0 right-0 flex justify-center z-20 landscape-mobile:top-2"
+      drag
+      dragMomentum={false}
+      className="absolute top-16 left-0 right-0 flex justify-center z-20 landscape-mobile:top-2 cursor-move"
     >
       <motion.div
         initial={{ scale: 0.9 }}
