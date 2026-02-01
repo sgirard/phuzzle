@@ -381,12 +381,9 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
         ))}
       </AnimatePresence>
 
-      {/* Completion overlay */}
+      {/* Completion banner */}
       {isComplete && (
-        <CelebrationOverlay 
-          onNewPuzzle={onNewPuzzle} 
-          onViewPuzzle={() => setIsComplete(false)} 
-        />
+        <CelebrationOverlay onNewPuzzle={onNewPuzzle} />
       )}
 
 
