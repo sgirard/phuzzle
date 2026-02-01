@@ -5,10 +5,9 @@ import { Sparkles, RotateCcw } from 'lucide-react';
 
 interface CelebrationOverlayProps {
   onNewPuzzle: () => void;
-  onViewPuzzle: () => void;
 }
 
-export default function CelebrationOverlay({ onNewPuzzle, onViewPuzzle }: CelebrationOverlayProps) {
+export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayProps) {
   useEffect(() => {
     // Fire confetti from both sides
     const duration = 3000;
@@ -50,20 +49,19 @@ export default function CelebrationOverlay({ onNewPuzzle, onViewPuzzle }: Celebr
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-10 pt-16"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="absolute top-16 left-1/2 -translate-x-1/2 z-20 landscape-mobile:top-2"
     >
       <motion.div
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
         transition={{ 
           type: 'spring', 
-          stiffness: 200, 
-          damping: 15,
-          delay: 0.2 
+          stiffness: 300, 
+          damping: 20,
         }}
-        className="text-center p-8 bg-card rounded-3xl shadow-2xl max-w-md mx-4"
+        className="bg-card/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-xl border border-accent/30 flex items-center gap-4 landscape-mobile:px-4 landscape-mobile:py-2 landscape-mobile:gap-3"
       >
         <motion.div
           animate={{ 
@@ -75,38 +73,29 @@ export default function CelebrationOverlay({ onNewPuzzle, onViewPuzzle }: Celebr
             repeat: Infinity, 
             repeatDelay: 2 
           }}
-          className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-accent/20 mb-6"
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-accent/20 landscape-mobile:w-8 landscape-mobile:h-8"
         >
-          <Sparkles className="w-10 h-10 text-accent" />
+          <Sparkles className="w-6 h-6 text-accent landscape-mobile:w-4 landscape-mobile:h-4" />
         </motion.div>
 
-        <h2 className="text-3xl font-display font-bold text-foreground mb-3">
-          Fuzzle Complete!
-        </h2>
-        
-        <p className="text-muted-foreground mb-8">
-          Congratulations! You've successfully assembled the puzzle. 
-          Ready for another challenge?
-        </p>
+        <div className="flex flex-col landscape-mobile:flex-row landscape-mobile:items-center landscape-mobile:gap-4">
+          <div>
+            <h2 className="text-xl font-display font-bold text-foreground landscape-mobile:text-lg">
+              Fuzzle Complete!
+            </h2>
+            <p className="text-sm text-muted-foreground hidden sm:block landscape-mobile:hidden">
+              Great job! Ready for another?
+            </p>
+          </div>
 
-        <div className="flex flex-col items-center gap-3">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onNewPuzzle}
-            className="btn-gold px-8 py-4 rounded-xl font-display font-semibold text-lg inline-flex items-center gap-3"
+            className="btn-gold px-4 py-2 rounded-xl font-display font-semibold text-sm inline-flex items-center gap-2 mt-2 landscape-mobile:mt-0"
           >
-            <RotateCcw className="w-5 h-5" />
-            Start New Fuzzle
-          </motion.button>
-          
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onViewPuzzle}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-          >
-            View completed fuzzle
+            <RotateCcw className="w-4 h-4" />
+            New Fuzzle
           </motion.button>
         </div>
       </motion.div>
