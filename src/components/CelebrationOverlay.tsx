@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Sparkles, RotateCcw } from 'lucide-react';
+import { Sparkles, RotateCcw, X } from 'lucide-react';
 
 interface CelebrationOverlayProps {
   onNewPuzzle: () => void;
+  onClose: () => void;
 }
 
-export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayProps) {
+export default function CelebrationOverlay({ onNewPuzzle, onClose }: CelebrationOverlayProps) {
   useEffect(() => {
     // Fire confetti from both sides
     const duration = 3000;
@@ -59,7 +60,7 @@ export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayPr
         }}
         drag
         dragMomentum={false}
-        className="bg-card/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-xl border border-accent/30 flex items-center gap-4 landscape-mobile:px-4 landscape-mobile:py-2 landscape-mobile:gap-3 cursor-move pointer-events-auto select-none"
+        className="relative bg-card/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-xl border border-accent/30 flex items-center gap-4 landscape-mobile:px-4 landscape-mobile:py-2 landscape-mobile:gap-3 cursor-move pointer-events-auto select-none"
       >
         <motion.div
           animate={{ 
@@ -95,6 +96,15 @@ export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayPr
           <RotateCcw className="w-4 h-4" />
           New Fuzzle
         </motion.button>
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute -top-2 -right-2 w-6 h-6 bg-muted hover:bg-muted-foreground/20 rounded-full flex items-center justify-center transition-colors"
+          aria-label="Close banner"
+        >
+          <X className="w-4 h-4 text-muted-foreground" />
+        </button>
       </motion.div>
     </div>
   );
