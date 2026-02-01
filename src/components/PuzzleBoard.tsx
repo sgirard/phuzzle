@@ -383,7 +383,10 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
 
       {/* Completion overlay */}
       {isComplete && (
-        <CelebrationOverlay onNewPuzzle={onNewPuzzle} />
+        <CelebrationOverlay 
+          onNewPuzzle={onNewPuzzle} 
+          onViewPuzzle={() => setIsComplete(false)} 
+        />
       )}
 
 
