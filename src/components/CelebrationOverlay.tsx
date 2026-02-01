@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, RotateCcw } from 'lucide-react';
 
-interface CelebrationOverlayProps {}
+interface CelebrationOverlayProps {
+  onNewPuzzle: () => void;
+}
 
-export default function CelebrationOverlay({}: CelebrationOverlayProps) {
+export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayProps) {
   useEffect(() => {
     // Fire confetti from both sides
     const duration = 3000;
@@ -82,6 +84,17 @@ export default function CelebrationOverlay({}: CelebrationOverlayProps) {
             Great job! Ready for another?
           </p>
         </div>
+
+        {/* New Fuzzle button - desktop only */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onNewPuzzle}
+          className="btn-gold px-4 py-2 rounded-xl font-display font-semibold text-sm items-center gap-2 hidden sm:inline-flex landscape-mobile:hidden"
+        >
+          <RotateCcw className="w-4 h-4" />
+          New Fuzzle
+        </motion.button>
       </motion.div>
     </div>
   );
