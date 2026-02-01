@@ -1,6 +1,6 @@
 {
-  "name": "Phuzzle",
-  "short_name": "Phuzzle",
+  "name": "Fuzzle",
+  "short_name": "Fuzzle",
   "description": "Create and solve photo tile puzzles in your browser",
   "start_url": "/",
   "display": "standalone",

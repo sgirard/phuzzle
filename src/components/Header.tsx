@@ -22,7 +22,7 @@ export default function Header({ showPreview, onTogglePreview, onNewPuzzle, show
             <Puzzle className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
           </div>
           <h1 className="text-lg sm:text-xl font-display font-semibold text-foreground">
-            Phuzzle
+            Fuzzle
           </h1>
         </div>
         
@@ -45,7 +45,7 @@ export default function Header({ showPreview, onTogglePreview, onNewPuzzle, show
               onClick={onNewPuzzle}
               className="btn-primary px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-primary-foreground font-medium text-xs sm:text-sm whitespace-nowrap"
             >
-              New Phuzzle
+              New Fuzzle
             </motion.button>
           </div>
         )}
