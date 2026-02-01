@@ -382,9 +382,7 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
       </AnimatePresence>
 
       {/* Completion banner */}
-      {isComplete && (
-        <CelebrationOverlay onNewPuzzle={onNewPuzzle} />
-      )}
+      {isComplete && <CelebrationOverlay />}
 
 
       {/* Progress indicator and attribution */}

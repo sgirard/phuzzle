@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Sparkles, RotateCcw } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
-interface CelebrationOverlayProps {
-  onNewPuzzle: () => void;
-}
+interface CelebrationOverlayProps {}
 
-export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayProps) {
+export default function CelebrationOverlay({}: CelebrationOverlayProps) {
   useEffect(() => {
     // Fire confetti from both sides
     const duration = 3000;
@@ -51,7 +49,7 @@ export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayPr
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="absolute top-16 left-1/2 -translate-x-1/2 z-20 landscape-mobile:top-2"
+      className="absolute top-16 left-0 right-0 flex justify-center z-20 landscape-mobile:top-2"
     >
       <motion.div
         initial={{ scale: 0.9 }}
@@ -78,25 +76,13 @@ export default function CelebrationOverlay({ onNewPuzzle }: CelebrationOverlayPr
           <Sparkles className="w-6 h-6 text-accent landscape-mobile:w-4 landscape-mobile:h-4" />
         </motion.div>
 
-        <div className="flex flex-col landscape-mobile:flex-row landscape-mobile:items-center landscape-mobile:gap-4">
-          <div>
-            <h2 className="text-xl font-display font-bold text-foreground landscape-mobile:text-lg">
-              Fuzzle Complete!
-            </h2>
-            <p className="text-sm text-muted-foreground hidden sm:block landscape-mobile:hidden">
-              Great job! Ready for another?
-            </p>
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onNewPuzzle}
-            className="btn-gold px-4 py-2 rounded-xl font-display font-semibold text-sm inline-flex items-center gap-2 mt-2 landscape-mobile:mt-0"
-          >
-            <RotateCcw className="w-4 h-4" />
-            New Fuzzle
-          </motion.button>
+        <div>
+          <h2 className="text-xl font-display font-bold text-foreground landscape-mobile:text-lg">
+            Fuzzle Complete!
+          </h2>
+          <p className="text-sm text-muted-foreground hidden sm:block landscape-mobile:hidden">
+            Great job! Ready for another?
+          </p>
         </div>
       </motion.div>
     </motion.div>

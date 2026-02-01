@@ -43,7 +43,7 @@ export default function Header({ showPreview, onTogglePreview, onNewPuzzle, show
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onNewPuzzle}
-              className="btn-primary px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-primary-foreground font-medium text-xs sm:text-sm whitespace-nowrap"
+              className="btn-gold px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap"
             >
               New Fuzzle
             </motion.button>
