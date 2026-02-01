@@ -33,6 +33,7 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
   const [config, setConfig] = useState<PuzzleConfig | null>(null);
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [isComplete, setIsComplete] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const [boardSize, setBoardSize] = useState({ width: 0, height: 0 });
   const [isReady, setIsReady] = useState(false);
 
@@ -292,7 +293,10 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
           }
 
           if (isPuzzleComplete(updatedPieces)) {
-            setTimeout(() => setIsComplete(true), 300);
+            setTimeout(() => {
+              setIsComplete(true);
+              setShowCelebration(true);
+            }, 300);
           }
 
           return updatedPieces;
@@ -382,7 +386,12 @@ export default function PuzzleBoard({ image, onNewPuzzle, attribution, gridConfi
       </AnimatePresence>
 
       {/* Completion banner */}
-      {isComplete && <CelebrationOverlay onNewPuzzle={onNewPuzzle} />}
+      {showCelebration && (
+        <CelebrationOverlay 
+          onNewPuzzle={onNewPuzzle} 
+          onClose={() => setShowCelebration(false)} 
+        />
+      )}
 
 
       {/* Progress indicator and attribution */}
