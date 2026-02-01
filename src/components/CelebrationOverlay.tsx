@@ -46,22 +46,18 @@ export default function CelebrationOverlay({}: CelebrationOverlayProps) {
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      drag
-      dragMomentum={false}
-      className="absolute top-16 left-0 right-0 flex justify-center z-20 landscape-mobile:top-2 cursor-move"
-    >
+    <div className="absolute top-16 left-0 right-0 flex justify-center z-20 landscape-mobile:top-2 pointer-events-none">
       <motion.div
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
+        initial={{ opacity: 0, y: -20, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ 
           type: 'spring', 
           stiffness: 300, 
           damping: 20,
         }}
-        className="bg-card/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-xl border border-accent/30 flex items-center gap-4 landscape-mobile:px-4 landscape-mobile:py-2 landscape-mobile:gap-3"
+        drag
+        dragMomentum={false}
+        className="bg-card/95 backdrop-blur-sm px-6 py-4 rounded-2xl shadow-xl border border-accent/30 flex items-center gap-4 landscape-mobile:px-4 landscape-mobile:py-2 landscape-mobile:gap-3 cursor-move pointer-events-auto select-none"
       >
         <motion.div
           animate={{ 
@@ -87,6 +83,6 @@ export default function CelebrationOverlay({}: CelebrationOverlayProps) {
           </p>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
