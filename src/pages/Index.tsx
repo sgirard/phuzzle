@@ -77,7 +77,7 @@ export default function Index() {
                 className="text-center mb-6 sm:mb-12"
               >
                 <h2 className="text-3xl md:text-5xl landscape-mobile:text-2xl font-display font-bold text-foreground mb-4">
-                  Create Your Phuzzle
+                  Create Your Fuzzle
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-md mx-auto">
                   Transform any image into a fun photo tile puzzle you can solve right in your browser
